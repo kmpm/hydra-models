@@ -1,0 +1,19 @@
+{
+  "name": "hydra-models",
+  "version": "0.0.1",
+  "author": "Peter Magnusson <peter@birchroad.net>",
+  "main": "index",
+  "scripts": {
+    "test": ".\\node_modules\\.bin\\mocha"
+  },
+  "dependencies": {
+    "mongoose": "~3.3.1",
+    "bcrypt-nodejs": "*",
+    "devnull": "*",
+    "nconf": "*"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*"
+  }
+}
