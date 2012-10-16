@@ -3,10 +3,10 @@ var mongoose = require('mongoose')
 
 
 var DatastreamSchema = new Schema({
-  name: {type: String, required: true},
-  unit: {type: String},
-  symbol: {type: String},
-  func_cv: {type: String},
+  name: {type: String, required: true, forms:{all:{}} },
+  unit: {type: String, forms:{all:{}}},
+  symbol: {type: String, forms:{all:{}}},
+  func_cv: {type: String, forms:{all:{}}},
   raw: {type: String},
   cv: {type: String},
   status: {type: String, default:'unknown'},
@@ -16,9 +16,11 @@ var DatastreamSchema = new Schema({
   }
 });
 
+
+
 var deviceSchema = new Schema({
-  name: {type:String, required: true, unique: true},
-  description: {type:String},
+  name: {type:String, required: true, unique: true, forms:{all:{}} },
+  description: {type:String,  forms:{all:{}} },
   datastreams: [DatastreamSchema],
 });
 
@@ -28,6 +30,9 @@ deviceSchema.statics.find_funcCv = function (callback){
   this.find({'datastreams.func_cv':{$exists:true}}).select('_id name datastreams.id datastreams.name datastreams.func_cv').exec(callback);
 }
 
+/*
+  @values Object {raw:, status:, [cv]}
+*/
 deviceSchema.statics.updateStreamValues = function(device, stream, values, callback) {
   var set = {};
   for(var key in values){
@@ -39,5 +44,5 @@ deviceSchema.statics.updateStreamValues = function(device, stream, values, callb
         {$set:set}, callback); 
 }
 
-module.exports = mongoose.model('Device', deviceSchema
-);
+
+module.exports = mongoose.model('Device', deviceSchema);
