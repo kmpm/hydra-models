@@ -26,7 +26,7 @@ describe("models.Device", function(){
   it("create minimal with 1 datastream", function(done){
     var d = new models.Device();
     d.name = 'mocha1.' + Date.now().toString();
-    d.datastreams.push({name:'1'});
+    d.streams.push({name:'1'});
     d.save(function(err){
       should.not.exist(err);
       done();
@@ -40,8 +40,8 @@ describe("models.Device", function(){
       function create(err) {
         should.not.exist(err);
         var d = new models.Device({name:'mocha3'});
-        d.datastreams.push({name:'1'});
-        d.datastreams.push({name:'2'});
+        d.streams.push({name:'1'});
+        d.streams.push({name:'2'});
         d.save(function(err){
           should.not.exist(err);
           done();
@@ -63,10 +63,10 @@ describe("models.Device", function(){
       function validate2(){
         models.Device.findOne({name:'mocha3'}, function(err, device){
           should.not.exist(err);
-          device.should.have.property('datastreams');
-          device.datastreams.should.have.length(2);
-          device.datastreams[1].should.have.property('name', '2');
-          device.datastreams[1].should.have.property('raw', '123');
+          device.should.have.property('streams');
+          device.streams.should.have.length(2);
+          device.streams[1].should.have.property('name', '2');
+          device.streams[1].should.have.property('raw', '123');
           done();
 
         });
@@ -84,7 +84,7 @@ describe("models.Device", function(){
         var count =5;
         for(var i=0;i<5;i++){
           var d = new models.Device({name:'mocha2.' + i + '.' + Date.now().toString()});
-          d.datastreams.push({name:'1', func_cv:'function(r) {\n return r;\n}'});
+          d.streams.push({name:'1', func_cv:'function(r) {\n return r;\n}'});
           d.save(function(err){
             should.not.exist(err);
             isall();
@@ -101,13 +101,13 @@ describe("models.Device", function(){
 
     it("list mocha2 func_cv", function(done){
       var query = models.Device.where('name').regex(/^mocha2/);
-      query.select("name datastreams.func_cv");
+      query.select("name streams.func_cv");
       query.exec(function(err, devices){
         should.not.exist(err);
         devices.should.have.length(5);
         var d0 =devices[0];
-        d0.should.have.property('datastreams');
-        var d0stream = d0.datastreams[0];
+        d0.should.have.property('streams');
+        var d0stream = d0.streams[0];
 
         d0stream.should.have.property('func_cv');
         d0stream.should.not.have.property('status');
@@ -120,11 +120,11 @@ describe("models.Device", function(){
       models.Device.find_funcCv( function(err, devices){
         should.not.exist(err);
         var d0 =devices[0];
-        d0.should.have.property('datastreams');
-        d0.datastreams.should.be.instanceOf(Array);
-        console.log(d0.datastreams);
-        (d0.datastreams.length > 0).should.be.true;
-        var d0stream = d0.datastreams[0];
+        d0.should.have.property('streams');
+        d0.streams.should.be.instanceOf(Array);
+        console.log(d0.streams);
+        (d0.streams.length > 0).should.be.true;
+        var d0stream = d0.streams[0];
 
         d0stream.should.have.property('func_cv');
         d0stream.should.have.property('name');
