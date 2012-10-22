@@ -42,14 +42,14 @@ deviceSchema.statics.createStreamForm = function() {
 /*
   @values Object {raw:, status:, [cv]}
 */
-deviceSchema.statics.updateStreamValues = function(device, stream, values, callback) {
+deviceSchema.statics.updateStreamValues = function(device_name, stream_name, values, callback) {
   var set = {};
   for(var key in values){
     if(values.hasOwnProperty(key)){
       set['streams.$.' + key] = values[key];
     }
   }
-  this.update({name:device, "streams.name":stream} , 
+  this.update({name:device_name, "streams.name":stream_name} , 
         {$set:set}, callback); 
 }
 
