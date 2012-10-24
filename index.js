@@ -1,27 +1,40 @@
 var mongoose = require('mongoose')
-  , nconf = require('nconf')
-  , Logger = require('devnull');
+  , Logger = require('devnull')
+  , Extend = require('./lib/extend');
 
 var DEFAULTS = {
-  mongo:{
-    host:'localhost',
-    port: 27017,
-    dbname: 'hydra'}
+  host:'localhost',
+  port: 27017,
+  dbname: 'hydra'
 }
 
-nconf.argv()
-  .file('config.json')
-  .defaults(DEFAULTS);
 
-var conf = nconf.get('mongo');
 var log = new Logger();
-mongoose.connect(conf.host, conf.dbname, conf.port, {});
+var deviceSchema =  require('./schemas/device');
+var userSchema = require('./schemas/user');
+var streamSchema = require('./schemas/stream');
 
 
-mongoose.connection.on("open", function(err){
-  if (err) throw err;
-  log.info("Successfully opened models");
-});
 
-exports.User = require('./user');
-exports.Device = require('./device');
+
+
+
+function Models(options) {
+  var conf = Extend(DEFAULTS, options);
+  var db = mongoose.createConnection(conf.host, conf.dbname, conf.port, {});
+
+  db.on("open", function(err){
+    if (err) throw err;
+    log.info("Successfully opened models");
+  });
+
+  this.Device = db.model('Device', deviceSchema);
+  this.User = db.model('User', userSchema);
+
+
+  this.Stream = db.model('Stream', streamSchema);
+}
+
+
+module.exports = Models;
+
