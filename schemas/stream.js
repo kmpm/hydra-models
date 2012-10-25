@@ -19,6 +19,8 @@ var streamSchema = new Schema({
   }
 });
 
+streamSchema.index({name: 1});
+
 streamSchema.pre('save', function(next){
   if(this.isModified('raw')>=0){
     this.last_raw = new Date();
