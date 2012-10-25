@@ -33,6 +33,7 @@ function Models(options) {
 
 
   this.Stream = db.model('Stream', streamSchema);
+  this.Types = mongoose.Types;
 }
 
 

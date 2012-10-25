@@ -7,7 +7,7 @@ var streamSchema = new Schema({
   name: {type: String, required: true, forms:{all:{}} },
   unit: {type: String, forms:{all:{}}},
   symbol: {type: String, forms:{all:{}}},
-  func_cv: {type: String, forms:{all:{widget:forms.widgets.textarea()}}},
+  func_cv: {type: String, default: "function(r){\n return r; \n}", forms:{all:{widget:forms.widgets.textarea()}}},
   raw: {type: String},
   cv: {type: String},
   status: {type: String, default:'unknown'},
@@ -20,11 +20,10 @@ var streamSchema = new Schema({
 });
 
 streamSchema.pre('save', function(next){
-  var mods = this.modifiedPaths();
-  if(mods.indexOf('raw')>=0){
+  if(this.isModified('raw')>=0){
     this.last_raw = new Date();
   }
-  if(mods.indexOf('cv')>=0){
+  if(this.isModified('cv')>=0){
     this.last_cv = new Date();
   }
   next();
@@ -48,8 +47,7 @@ streamSchema.statics.updateStreamValues = function(stream_id, values, callback) 
       set[key] = values[key];
     }
   }
-  this.update({"_id":stream_id} , 
-        {$set:set}, callback); 
+  return this.findByIdAndUpdate(stream_id, {$set:set}, callback);
 }
 
 
