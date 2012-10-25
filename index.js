@@ -13,6 +13,7 @@ var log = new Logger();
 var deviceSchema =  require('./schemas/device');
 var userSchema = require('./schemas/user');
 var streamSchema = require('./schemas/stream');
+var streamHistorySchema = require('./schemas/stream_history');
 
 
 
@@ -30,9 +31,8 @@ function Models(options) {
 
   this.Device = db.model('Device', deviceSchema);
   this.User = db.model('User', userSchema);
-
-
   this.Stream = db.model('Stream', streamSchema);
+  this.StreamHistory = db.model('StreamHistory', streamHistorySchema);
   this.Types = mongoose.Types;
 }
 
