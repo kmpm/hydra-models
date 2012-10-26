@@ -7,6 +7,7 @@
     "test": ".\\node_modules\\.bin\\mocha"
   },
   "dependencies": {
+    "moment": "*",
     "mongoose": "~3.3.1",
     "forms-mongoose": "*",
     "bcrypt-nodejs": "*",

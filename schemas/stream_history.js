@@ -1,6 +1,6 @@
 var mongoose = require('mongoose')
-  , Schema = mongoose.Schema;
-
+  , Schema = mongoose.Schema
+  , moment = require('moment');
 
 var streamHistorySchema = new Schema({
   stream: {type:Schema.Types.ObjectId, ref:'Stream', required: true},
@@ -13,6 +13,9 @@ var streamHistorySchema = new Schema({
 
 streamHistorySchema.index({stream: 1, timestamp:1});
 
+streamHistorySchema.virtual('date').get(function () {
+  return moment(this.timestamp).format('YYYY-MM-DD hh:mm:ss');
+});
 
 
 module.exports = streamHistorySchema;
