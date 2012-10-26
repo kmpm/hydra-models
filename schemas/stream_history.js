@@ -14,7 +14,7 @@ var streamHistorySchema = new Schema({
 streamHistorySchema.index({stream: 1, timestamp:1});
 
 streamHistorySchema.virtual('date').get(function () {
-  return moment(this.timestamp).format('YYYY-MM-DD hh:mm:ss');
+  return moment(this.timestamp).format('YYYY-MM-DD HH:mm:ss');
 });
 
 
