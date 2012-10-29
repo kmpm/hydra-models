@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
   , Schema = mongoose.Schema;
 
-var forms = require('forms-mongoose')
+var forms = require('forms-mongoose');
 
 var streamSchema = new Schema({
   name: {type: String, required: true, forms:{all:{}} },
