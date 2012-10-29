@@ -9,7 +9,7 @@ var streamSchema = new Schema({
   symbol: {type: String, forms:{all:{}}},
   func_cv: {type: String, default: "function(r){\n return r; \n}", forms:{all:{widget:forms.widgets.textarea()}}},
   raw: {type: String},
-  cv: {type: String},
+  cv: {type: Schema.Types.Mixed},
   status: {type: String, default:'unknown'},
   last_raw: {type:Date },
   last_cv: {type:Date },
