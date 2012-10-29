@@ -3,6 +3,10 @@ var mongoose = require('mongoose')
 
 var forms = require('forms-mongoose');
 
+function dateNow(){
+  return new Date();
+}
+
 var streamSchema = new Schema({
   name: {type: String, required: true, forms:{all:{}} },
   unit: {type: String, forms:{all:{}}},
@@ -13,6 +17,7 @@ var streamSchema = new Schema({
   status: {type: String, default:'unknown'},
   last_raw: {type:Date },
   last_cv: {type:Date },
+  last_change: {type: Date, default:dateNow},
   cosm: {
     feed: {type: String},
     datastream: {type: String}
@@ -39,6 +44,41 @@ streamSchema.statics.find_funcCv = function (callback){
 streamSchema.statics.createForm = function(){
   return forms.create(this);
 }
+
+/*
+  @values Object {raw:, status:, [cv]}
+*/
+streamSchema.statics.findByIdAndUpdateWithPrevious = function(id, update, callback) {
+  var doc = this;
+  var previous, updated;
+  this.findById(id, found_previous)
+  function found_previous(err, stream){
+    previous = stream;
+    if(err) return found(err);
+    if(update.hasOwnProperty('cv')){
+      if(update.cv === stream.cv){
+        delete update.cv;
+        delete update.last_cv;
+      }
+      else
+      {
+        update.last_cv = new Date();
+        update.last_change = update.last_cv;
+      }
+    }
+    doc.findByIdAndUpdate(id, {$set:update}, found_updated);
+  }
+
+  function found_updated(err, stream){
+    updated=stream;
+    found(err);
+  }
+
+  function found(err){
+    callback(null, {previous:previous, updated:updated});
+  }
+}
+
 
 /*
   @values Object {raw:, status:, [cv]}
