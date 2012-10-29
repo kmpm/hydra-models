@@ -22,11 +22,12 @@ var streamSchema = new Schema({
 streamSchema.index({name: 1});
 
 streamSchema.pre('save', function(next){
-  if(this.isModified('raw')>=0){
+  if(this.isModified('raw') && !this.isModified('last_raw')){
     this.last_raw = new Date();
   }
-  if(this.isModified('cv')>=0){
+  if(this.isModified('cv')){
     this.last_cv = new Date();
+    this.last_change = this.last_cv;
   }
   next();
 });
