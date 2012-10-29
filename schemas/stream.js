@@ -15,6 +15,7 @@ var streamSchema = new Schema({
   raw: {type: String},
   cv: {type: Schema.Types.Mixed},
   status: {type: String, default:'unknown'},
+  state: {type: String, default:'unknown'},
   last_raw: {type:Date },
   last_cv: {type:Date },
   last_change: {type: Date, default:dateNow},
@@ -50,6 +51,7 @@ streamSchema.statics.createForm = function(){
 */
 streamSchema.statics.findByIdAndUpdateWithPrevious = function(id, update, callback) {
   var doc = this;
+  var state='live';
   var previous, updated;
   this.findById(id, found_previous)
   function found_previous(err, stream){
@@ -62,10 +64,17 @@ streamSchema.statics.findByIdAndUpdateWithPrevious = function(id, update, callba
       }
       else
       {
+
         update.last_cv = new Date();
-        update.last_change = update.last_cv;
+        update.last_change = update.last_cv; 
       }
     }
+    var last_update = update.last_cv || stream.last_cv;
+    var last_raw = update.last_raw || stream.last_raw;
+    if((last_raw - last_update) >  (5*60*1000)){
+      state='frozen';
+    }
+    update.state = state;
     doc.findByIdAndUpdate(id, {$set:update}, found_updated);
   }
 
